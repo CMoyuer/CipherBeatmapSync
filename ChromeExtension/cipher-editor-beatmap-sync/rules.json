@@ -1,0 +1,38 @@
+[
+    {
+        "id": 1000,
+        "priority": 1,
+        "action": {
+            "type": "modifyHeaders",
+            "responseHeaders": [
+                {
+                    "header": "Access-Control-Allow-Origin",
+                    "operation": "set",
+                    "value": "*"
+                }
+            ]
+        },
+        "condition": {
+            "urlFilter": "http://127.0.0.1/1.js",
+            "resourceTypes": [
+                "script"
+            ]
+        }
+    },
+    {
+        "id": 1001,
+        "priority": 1,
+        "action": {
+            "type": "redirect",
+            "redirect": {
+                "url": "http://127.0.0.1/1.js"
+            }
+        },
+        "condition": {
+            "urlFilter": "*://cipher-editor-cn.picovr.com/assets/index-*.js",
+            "resourceTypes": [
+                "script"
+            ]
+        }
+    }
+]

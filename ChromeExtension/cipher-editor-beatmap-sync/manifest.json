@@ -1,0 +1,50 @@
+{
+	"manifest_version": 3,
+	"name": "CipherBeatmapSync",
+	"version": "1.0.0",
+	"description": "闪韵灵镜歌曲同步助手",
+	"icons": {
+		"16": "img/icon.png",
+		"32": "img/icon.png",
+		"48": "img/icon.png",
+		"128": "img/icon.png"
+	},
+	"content_scripts": [
+		{
+			"matches": [
+				"*://cipher-editor-cn.picovr.com/*"
+			],
+			"js": [
+				"js/lib/jquery-3.6.0.min.js",
+				"js/content-script.js"
+			],
+			"run_at": "document_start"
+		}
+	],
+	"permissions": [
+		"notifications",
+		"webRequest",
+		"declarativeNetRequest",
+		"declarativeNetRequestFeedback",
+		"declarativeNetRequestWithHostAccess"
+	],
+	"host_permissions": [
+		"*://cipher-editor-cn.picovr.com/",
+		"*://127.0.0.1/"
+	],
+	"declarative_net_request": {
+		"rule_resources": [
+			{
+				"id": "rules_01",
+				"enabled": true,
+				"path": "rules.json"
+			}
+		]
+	},
+	"action": {
+		"default_popup": "popup.html"
+	},
+	"omnibox": {
+		"keyword": "cipher"
+	}
+}
