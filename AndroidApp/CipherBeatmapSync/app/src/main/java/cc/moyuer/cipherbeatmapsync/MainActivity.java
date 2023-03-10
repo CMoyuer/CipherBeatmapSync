@@ -35,9 +35,10 @@ public class MainActivity extends AppCompatActivity {
         btnStop = this.findViewById(R.id.btnStop);
         txtLog = this.findViewById(R.id.txtLog);
         scrollLog = this.findViewById(R.id.scrollLog);
-
+        // 初始化
         messageHandle = new MessageHandle(this);
         messageHandle.bindLogView(txtLog, scrollLog);
+        Global.Init(this);
         // 输出启动信息
         clearLog();
         addLog("欢迎使用Cipher谱面同步助手", true);
