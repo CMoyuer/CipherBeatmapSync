@@ -1,8 +1,6 @@
 package cc.moyuer.cipherbeatmapsync;
 
 import android.os.Environment;
-import android.os.Message;
-import android.widget.Toast;
 
 import com.yanzhenjie.andserver.annotation.PostMapping;
 import com.yanzhenjie.andserver.annotation.RequestParam;
@@ -19,17 +17,17 @@ public class WebServerController {
         int code = 200;
         String message = "success";
         // 处理文件
-        String filePath = Global.externalFilesPath + fileName;
-        String tarPath = Environment.getExternalStorageDirectory().getAbsolutePath() +
+        String zipPath = Global.externalFilesPath + fileName + ".zip";
+        String tarDir = Environment.getExternalStorageDirectory().getAbsolutePath() +
                 "/Android/data/com.bytedance.cipher/files/Ciphermap/CustomLevels/";
         try {
             // 保存
-            Utils.saveZipToStorage(filePath, base64);
+            Utils.saveZipToStorage(zipPath, base64);
             // 删除旧文件夹
-            File oldPath = new File(tarPath + fileName.replace(".zip", ""));
+            File oldPath = new File(tarDir + fileName);
             if (oldPath.exists()) Utils.delFileUnRoot(oldPath);
             // 解压
-            Utils.decompression(filePath, oldPath.getPath());
+            Utils.decompression(zipPath, oldPath.getPath());
             // 成功
             Global.addLog("从编辑器中获取到文件：" + fileName);
         } catch (Exception e) {
@@ -39,7 +37,7 @@ public class WebServerController {
             message = e.getMessage();
         } finally {
             try {
-                File file = new File(filePath);
+                File file = new File(zipPath);
                 if (file.exists()) file.delete();
             } catch (Exception ignored) {
             }

@@ -123,7 +123,7 @@ public class MainService extends Service {
         @Override
         public void onStarted() {
             String localIP = Utils.getLocalIpAddress(getApplicationContext());
-            addLog("Service已启动：" + localIP + ":" + webServer.getPort());
+            addLog("Service已启动(" + localIP + ":" + webServer.getPort() + ")");
         }
 
         @Override

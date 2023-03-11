@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         // 输出启动信息
         Global.clearLog();
         Global.addLog("欢迎使用Cipher谱面同步助手", true);
+        Global.addLog("By：如梦", true);
         Global.addLog("软件版本：" + Utils.getVersionName(this), true);
         Global.addLog("推荐使用与Chrome插件一致的版本，以避免奇怪的问题！", true);
         Global.addLog("祝您玩得愉快~", true);
@@ -86,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void startService() {
         if (!Utils.isServiceRunning(NAME_MAIN_SERVER, this)) {
-            Global.addLog("正在启动Service...");
             Intent intent = new Intent(MainActivity.this, MainService.class);
             startService(intent);
         }
@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void stopService() {
         if (Utils.isServiceRunning(NAME_MAIN_SERVER, this)) {
-            Global.addLog("正在停止Service...");
             Intent intent = new Intent(MainActivity.this, MainService.class);
             stopService(intent);
         }
@@ -127,8 +126,9 @@ public class MainActivity extends AppCompatActivity {
                 new KeepLiveService() {
                     @Override
                     public void onWorking() {
-                        if (Global.running)
-                            startService();
+                        if (!Global.running) return;
+                        Global.addLog("服务意外关闭，正在重启...");
+                        startService();
                     }
 
                     @Override
