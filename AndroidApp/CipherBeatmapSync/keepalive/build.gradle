@@ -1,13 +1,11 @@
 plugins {
-    id 'com.android.application'
-    id 'com.yanzhenjie.andserver'
+    id 'com.android.library'
 }
 
 android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "cc.moyuer.cipherbeatmapsync"
         minSdk 25
         targetSdk 32
         versionCode 1
@@ -23,21 +21,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
-    implementation project(path: ':keepalive')
-    implementation('com.squareup.okhttp3:okhttp:5.0.0-alpha.11')
-    implementation('javax.activation:javax.activation-api:1.2.0')
-    implementation('com.yanzhenjie.andserver:api:2.1.11')
-    annotationProcessor('com.yanzhenjie.andserver:processor:2.1.11')
 
     implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'com.google.android.material:material:1.6.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

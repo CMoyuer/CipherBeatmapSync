@@ -4,10 +4,11 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.event === "upload2vr") {
         uploadBeatmapToVR(message.filename, message.base64).then(() => {
-            console.log("上传到VR一体机成功!")
+            sendResponse({ succ: true, msg: "success" })
         }).catch(err => {
-            console.log("上传到VR一体机失败: " + err)
+            sendResponse({ succ: false, msg: err })
         })
+        return true
     }
 })
 
@@ -34,6 +35,6 @@ async function uploadBeatmapToVR(fileName, base64) {
             body: formData
         }
     ).then(res => res.json())
-    if (upload_result.code != 200)
+    if (upload_result.code < 200 || upload_result.code >= 300)
         throw upload_result.message
 }

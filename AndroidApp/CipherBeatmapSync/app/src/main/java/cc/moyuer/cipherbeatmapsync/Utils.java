@@ -1,5 +1,7 @@
 package cc.moyuer.cipherbeatmapsync;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -9,9 +11,12 @@ import android.util.Base64;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class Utils {
     /**
@@ -55,14 +60,8 @@ public class Utils {
         File file = new File(Global.externalFilesPath + mFileName);
         FileOutputStream fos;
         try {
-            if (!file.exists()) {
-                String parentPath = file.getParent();
-                if (parentPath != null) {
-                    File parentDir = new File(parentPath);
-                    if (!parentDir.exists())
-                        parentDir.mkdirs();
-                }
-            }
+            autoCreateDirs(file.getPath());
+            if(!file.exists())file.createNewFile();
             fos = new FileOutputStream(file);
             fos.write(mContent.getBytes());
             fos.close();
@@ -73,7 +72,34 @@ public class Utils {
         }
     }
 
-    public static void saveZipToStorage(String fileName, String base64) throws Exception{
+    /**
+     * 判断进程是否正在运行
+     *
+     * @param className
+     * @param context
+     * @return
+     */
+    public static boolean isServiceRunning(String className, Context context) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> runningServices = manager.getRunningServices(1000);
+        for (ActivityManager.RunningServiceInfo runningServiceInfo : runningServices) {
+            ComponentName service = runningServiceInfo.service;
+            String name = service.getClassName();
+            if (name.equals(className)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 将Base64保存为Zip文件
+     *
+     * @param fileName
+     * @param base64
+     * @throws Exception
+     */
+    public static void saveZipToStorage(String fileName, String base64) throws Exception {
         FileOutputStream outputStream = null;
         BufferedOutputStream bufferedOutputStream = null;
         try {
@@ -83,14 +109,8 @@ public class Utils {
             base64 = base64.substring(startStr.length());
             byte[] compressed = Base64.decode(base64, Base64.DEFAULT);
             File file = new File(Global.externalFilesPath + fileName);
-            if (!file.exists()) {
-                String parentPath = file.getParent();
-                if (parentPath != null) {
-                    File parentDir = new File(parentPath);
-                    if (!parentDir.exists())
-                        parentDir.mkdirs();
-                }
-            }
+            autoCreateDirs(file.getPath());
+            if(!file.exists())file.createNewFile();
             outputStream = new FileOutputStream(file);
             bufferedOutputStream = new BufferedOutputStream(outputStream);
             bufferedOutputStream.write(compressed);
@@ -111,5 +131,41 @@ public class Utils {
                 }
             }
         }
+    }
+
+    public static boolean decompression(String targetFileName, String parent) throws Exception {
+        ZipInputStream zIn = new ZipInputStream(new FileInputStream(targetFileName));
+        ZipEntry entry;
+        File file;
+        while ((entry = zIn.getNextEntry()) != null && !entry.isDirectory()) {
+            file = new File(parent, entry.getName());
+            autoCreateDirs(file.getPath());
+            System.out.println(file.getPath());
+            if(!file.exists())file.createNewFile();
+            OutputStream out = new FileOutputStream(file);
+            BufferedOutputStream bos = new BufferedOutputStream(out);
+            byte[] bytes = new byte[1024];
+            int len;
+            while ((len = zIn.read(bytes)) != -1) {
+                bos.write(bytes, 0, len);
+            }
+            bos.close();
+            System.out.println(file.getAbsolutePath() + " 解压成功");
+        }
+        return true;
+    }
+
+    /**
+     * 传入文件路径，自动创建上级目录
+     * @param filePath
+     */
+    public static void autoCreateDirs(String filePath){
+        File file = new File(filePath);
+        if(file.exists())return;
+        String parentDir = file.getParent();
+        if(parentDir == null)return;
+        File parent = new File(parentDir);
+        if(parent.exists())return;
+        parent.mkdirs();
     }
 }

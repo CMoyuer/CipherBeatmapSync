@@ -1,6 +1,5 @@
 package cc.moyuer.cipherbeatmapsync;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -13,26 +12,11 @@ import com.yanzhenjie.andserver.Server;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -96,61 +80,16 @@ public class MainService extends Service {
                 .build();
         try (Response response = client.newCall(request).execute()) {
             ResponseBody responseBody = response.body();
-            if (responseBody != null) {
-                String resultStr = responseBody.string();
-                JSONObject result = new JSONObject(resultStr);
-                int code = result.getInt("code");
-                if (code != 200) throw new Exception("HTTP CODE: " + code);
-                System.out.println("同步DDNS信息成功：" + resultStr);
-            } else {
-                throw new Exception("No Data");
-            }
+            String resultStr = responseBody.string();
+            JSONObject result = new JSONObject(resultStr);
+            int code = result.getInt("code");
+            if (code != 200) throw new Exception("HTTP CODE: " + code);
+            System.out.println("同步DDNS信息成功：" + resultStr);
         } catch (Exception e) {
             e.printStackTrace();
             addLog("同步IP信息失败：" + e.getMessage());
         }
     }
-
-    // ========================== SslContext ==========================
-
-//    private void createSslContext() {
-//        // 通过在线接口生成证书
-//        JSONObject data;
-//        try {
-//            data = new JSONObject("{\"inputDomain\":\"" +
-//                    Utils.getLocalIpAddress(getApplicationContext())
-//                    + "\",\"algorithm\":\"rsa\",\"keyLength\":\"2048\",\"hash\":\"SHA256WITHRSAENCRYPTION\",\"storeType\":\"PKCS12\",\"storePassword\":\"moyuer\",\"alias\":\"ssl-demo\",\"company\":\"\",\"department\":\"\",\"email\":\"\",\"country\":\"CN\",\"province\":\"\",\"city\":\"\",\"useMore\":false}");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            addLog("获取SSL证书失败：" + e.getMessage());
-//            return;
-//        }
-//
-//        OkHttpClient client = new OkHttpClient();
-//        RequestBody body = RequestBody.create(data.toString(), JSON);
-//        Request request = new Request.Builder()
-//                .url("https://www.lddgo.net/api/SslGenerate")
-//                .post(body)
-//                .build();
-//        try (Response response = client.newCall(request).execute()) {
-//            ResponseBody responseBody = response.body();
-//            if (responseBody != null) {
-//                String resultStr = responseBody.string();
-//                JSONObject result = new JSONObject(resultStr);
-//                int code = result.getInt("code");
-//                if (code != 0) throw new Exception(result.getString("msg"));
-//                result = result.getJSONObject("data");
-//                Utils.writeTxtToStorage(this, "ssl/cert.pem", result.getString("fullChain"));
-//                Utils.writeTxtToStorage(this, "ssl/private.key", result.getString("key"));
-//                System.out.println("获取SSL证书成功：" + result);
-//            } else {
-//                throw new Exception("No Data");
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            addLog("获取SSL证书失败：" + e.getMessage());
-//        }
-//    }
 
     // ========================== WebServer ==========================
     private Server webServer;
