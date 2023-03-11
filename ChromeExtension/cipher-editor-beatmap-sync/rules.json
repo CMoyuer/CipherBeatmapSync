@@ -25,11 +25,14 @@
         "action": {
             "type": "redirect",
             "redirect": {
-                "url": "https://cmoyuer.gitee.io/my-resources/js/cipher-editor-index.js"
+                "regexSubstitution": "https://api.moyuer.cc/js_hook?type=cipher_editor_sync_index&url=\\0"
             }
         },
         "condition": {
-            "urlFilter": "*://cipher-editor-cn.picovr.com/assets/index-*.js",
+            "requestDomains": [
+                "picovr.com"
+            ],
+            "regexFilter": "https://cipher-editor-cn.picovr.com/assets/index-\\w*.js",
             "resourceTypes": [
                 "script"
             ]
