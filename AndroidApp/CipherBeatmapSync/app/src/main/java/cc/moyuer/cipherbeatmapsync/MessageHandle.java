@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -75,5 +76,4 @@ public class MessageHandle extends Handler {
         logList.clear();
         txtLog.setText("");
     }
-
 }

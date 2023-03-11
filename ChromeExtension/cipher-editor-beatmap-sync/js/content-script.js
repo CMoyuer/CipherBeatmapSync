@@ -17,6 +17,7 @@ window.addEventListener("message", (event) => {
 	if (event.data.event === "upload2vr") {
 		let file = event.data.blob
 		let filename = event.data.filename
+		filename = filename.replace(/_\d{4}(_\d{2}){5}.zip$/g, '')
 		blobToBase64(file, base64 => {
 			if (base64.startsWith("data:application/zip;base64,")) {
 				chrome.runtime.sendMessage(

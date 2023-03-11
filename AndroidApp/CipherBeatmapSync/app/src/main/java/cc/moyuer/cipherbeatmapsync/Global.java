@@ -8,7 +8,7 @@ public class Global {
     public static boolean running = false;
 
     public static void Init(Context context){
-        externalFilesPath = context.getExternalFilesDir("/").getPath();
+        externalFilesPath = context.getExternalFilesDir("").getPath() + "/";
     }
 
     // ================================= Log =================================
@@ -29,5 +29,4 @@ public class Global {
         msg.arg1 = noTime ? 1 : 0;
         MainActivity.messageHandle.sendMessage(msg);
     }
-
 }
