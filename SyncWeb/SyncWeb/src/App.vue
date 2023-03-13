@@ -18,6 +18,5 @@
 	#app {
 		height: 100%;
 		text-align: center;
-		background-color: #262d38;
 	}
 </style>
