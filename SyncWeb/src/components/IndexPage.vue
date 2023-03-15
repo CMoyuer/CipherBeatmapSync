@@ -4,6 +4,12 @@
 			闪韵灵镜 谱面同步助手
 		</el-header>
 		<el-main>
+			<div v-show="dropTip" class="drop-tip">
+				<el-icon>
+					<upload-filled />
+				</el-icon>
+				<div class="tip">松开以添加到同步任务中</div>
+			</div>
 			<div class="ipAddress">
 				<el-input v-model="ipInput" :disabled="ipInputState.lock.value" placeholder="VR设备的局域网IP地址">
 					<template #prepend>设备IP</template>
@@ -51,7 +57,8 @@
 		EditPen,
 		CloseBold,
 		Loading,
-		Failed
+		Failed,
+		UploadFilled
 	} from '@element-plus/icons-vue'
 	import {
 		ElMessage
@@ -64,34 +71,69 @@
 	} from 'vue'
 	import * as connStateManager from "../utils/ConnStateManager.js"
 	import * as taskManager from "../utils/TaskManager.js"
+	import * as cipher from "../utils/cipher_helper.js"
+	import * as config from "../config/config.js"
 	import {
 		TASK_STAUS
 	} from "../utils/TaskManager.js"
-
-	// ========================================== 参数设置 ==========================================
-
-	const APP_WEB_SERVER_PORT = 25521 // APP端Web服务器端口
 
 	// ========================================== 生命周期 ==========================================
 
 	onMounted(() => {
 		loadIPInfo()
 		initTaskManager()
-		for (let i = 0; i < 2; i++) {
-			window.postMessage({
-				event: "add_ciphermap",
-				name: "taasdadadasdasdsaasdasdashdiaiudnasidsk_" + i,
-				id: "id_" + i,
-				image: "https://lf-ciphercdn-cn.picovr.com/obj/lf-game-lf/gdl_app_405727/mapper/cover/backtoyou.png",
-				base64: "a"
-			})
-		}
 		connStateManager.onStateChange(onConnStateChange)
+		taskManager.setOnStatusChanged(taskStatusChanged)
+		initDragEvent()
 	})
 
 	onUnmounted(() => {
 		// Do Nothing
 	})
+
+	// =========================================== 拖拽添加文件 ===========================================
+	let dropTip = ref(false)
+
+	function initDragEvent() {
+		// 禁用默认拖拽事件
+		let doc = document.documentElement
+		doc.addEventListener('drop', e => e.preventDefault())
+		doc.addEventListener('dragleave', e => e.preventDefault())
+		doc.addEventListener('dragenter', e => e.preventDefault())
+		doc.addEventListener('dragover', e => e.preventDefault())
+		// 拖拽事件
+		let ele = document.querySelector('html')
+		let lastenter = null
+		ele.addEventListener('dragenter', (e) => {
+			lastenter = e.target
+			ele.classList.add('drop-area')
+			dropTip.value = true
+		})
+		ele.addEventListener('dragleave', function(e) {
+			if (lastenter != e.target) return
+			ele.classList.remove('drop-area')
+			dropTip.value = false
+		})
+		ele.addEventListener('drop', (e) => {
+			ele.classList.remove('drop-area')
+			dropTip.value = false
+			let files = e.dataTransfer.files
+			for (let i = 0; i < files.length; i++) {
+				let file = files[i]
+				if (!file.name.endsWith(".zip")) {
+					ElMessage.error('只支持zip格式谱面')
+					continue
+				}
+				cipher.getBaseInfo(files[i]).then(res => {
+					res.event = "add_ciphermap"
+					window.postMessage(res)
+				}).catch(err => {
+					console.error(err)
+					ElMessage.error('导入失败啦, \r\n看看控制台怎么回事吧')
+				})
+			}
+		})
+	}
 
 	// =========================================== IP地址 ===========================================
 
@@ -168,20 +210,6 @@
 
 	// ========================================== 任务控制 ==========================================
 
-	function startTaskProcess() {
-		setIpAddressTip("info", "正在尝试连接VR端...")
-		taskManager.setup(getAppUrl(), taskStatusChanged)
-		connStateManager.setup(getAppUrl())
-		connStateManager.start()
-	}
-
-	function stopTaskProcess() {
-		connStateManager.stop()
-		taskManager.stop()
-	}
-
-	// ========================================== 任务控制 ==========================================
-
 	/** @type {{value:{taskId:taskManager.TaskInfo}}} */
 	const taskInfoSets = ref({})
 	/** @type {{value:{string:boolean}}} */
@@ -199,6 +227,18 @@
 				taskManager.addTask(data)
 			}
 		})
+	}
+
+	function startTaskProcess() {
+		setIpAddressTip("info", "正在尝试连接VR端...")
+		taskManager.setApiUrl(getAppUrl())
+		connStateManager.setup(getAppUrl())
+		connStateManager.start()
+	}
+
+	function stopTaskProcess() {
+		connStateManager.stop()
+		taskManager.stop()
 	}
 
 	/**
@@ -229,7 +269,7 @@
 	 * 获取App端的API链接
 	 */
 	function getAppUrl(api = "") {
-		return "http://" + ipInput.value + ":" + APP_WEB_SERVER_PORT + "/" + api
+		return "http://" + ipInput.value + ":" + config.APP_WEB_SERVER_PORT + "/" + api
 	}
 </script>
 
@@ -238,10 +278,34 @@
 		padding: 15px;
 	}
 
+	.drop-area * {
+		pointer-events: none;
+	}
+
+	.drop-tip {
+		background-color: #000000A0;
+		position: fixed;
+		left: 0px;
+		top: 0px;
+		width: 100%;
+		height: 100%;
+		z-index: 1000;
+		color: white;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.drop-tip .el-icon {
+		font-size: 120px;
+	}
+
 	.title {
 		font-size: 18px;
 		font-weight: bold;
-		background-color: #409EFF;
+		/* background-color: #409EFF; */
+		background-image: -webkit-linear-gradient(top, #73b9ff, #409EFF);
 		color: white;
 		padding: 10px;
 		height: auto;

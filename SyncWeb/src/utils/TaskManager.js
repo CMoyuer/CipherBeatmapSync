@@ -3,9 +3,10 @@ import {
 	v4 as uuidv4
 } from 'uuid'
 
+import * as config from "../config/config.js"
+
 /** @name 任务信息 @typedef TaskInfo  @type {{_taskId:string|undefined, _status:number|undefined, _errMsg:string|undefined, id:string, name:string, base64:string, image:string}} */
 
-const TASK_INTERVAL_TIME = 1500 // 每次任务间隔时间
 export const TASK_STAUS = {
 	ADD: 0,
 	POSTING: 1,
@@ -27,14 +28,21 @@ let taskProcessHandle = 0
 // =============================== Public ===============================
 
 /**
- * 参数设置
+ * 设置设备Api地址
  * @param {string} url 设备Api地址
+ */
+export function setApiUrl(url) {
+	api_url = url
+}
+
+/**
+ * 设置状态变化回调
  * @param {Function|undefined} onStatusChanged 设备Api地址
  */
-export function setup(url, onStatusChanged) {
-	api_url = url
+export function setOnStatusChanged(onStatusChanged) {
 	statusCallback = typeof(onStatusChanged) == "function" ? onStatusChanged : () => {}
 }
+
 
 /**
  * 开始处理任务
@@ -42,7 +50,7 @@ export function setup(url, onStatusChanged) {
 export function start() {
 	if (taskProcessHandle > 0) return
 	processTaskQueue()
-	taskProcessHandle = setInterval(processTaskQueue, TASK_INTERVAL_TIME)
+	taskProcessHandle = setInterval(processTaskQueue, config.TASK_INTERVAL_TIME)
 }
 
 /**
