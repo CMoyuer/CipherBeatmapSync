@@ -1,2 +1,2 @@
-rd /s /Q "CiphermapSync/www/"
-cd CiphermapSync_HTML && npm run build && cd .. && xcopy /e "CiphermapSync_HTML\dist\" "CiphermapSync\www\" && cd CiphermapSync && cordova build --release && cd .. && pause
+rd /s /Q "www"
+cd CiphermapSync_HTML && npm run build && cd .. && xcopy /e "CiphermapSync_HTML\dist\" "www\" && cordova build --release && pause

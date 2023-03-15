@@ -1,7 +1,7 @@
 {
   "android": {
     "debug": {
-      "keystore": "../cipher.jks",
+      "keystore": "./cipher.jks",
       "storePassword": "cipher",
       "alias": "cipher",
       "password": "cipher",
@@ -9,7 +9,7 @@
 	  "packageType": "apk"
     },
     "release": {
-      "keystore": "../cipher.jks",
+      "keystore": "./cipher.jks",
       "storePassword": "cipher",
       "alias": "cipher",
       "password": "cipher",

@@ -1,5 +1,5 @@
 {
-  "name": "cc.moyuer.cipherbeatmapsync",
+  "name": "cc.moyuer.ciphermapsync",
   "displayName": "HelloCordova",
   "version": "1.0.0",
   "description": "A sample Apache Cordova application that responds to the deviceready event.",
@@ -14,6 +14,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "cordova-android": "^10.1.2",
+    "cordova-plugin-networkinterface": "github:salbahra/cordova-plugin-networkinterface",
     "cordova-plugin-webserver": "github:bykof/cordova-plugin-webserver"
   },
   "cordova": {
@@ -21,7 +22,8 @@
       "android"
     ],
     "plugins": {
-      "cordova-plugin-webserver": {}
+      "cordova-plugin-webserver": {},
+      "cordova-plugin-networkinterface": {}
     }
   }
 }

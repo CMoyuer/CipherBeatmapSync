@@ -12,6 +12,8 @@
 
 <script setup>
 	import {
+		onMounted,
+		onUnmounted,
 		ref
 	} from 'vue'
 	import {
@@ -19,6 +21,15 @@
 		SwitchButton,
 		Loading,
 	} from '@element-plus/icons-vue'
+	import * as webServer from '../utils/web_server.js'
+
+	// =============================== Par ===============================
+
+	// =============================== Event ===============================
+
+	onMounted(() => {
+		webServer.init()
+	})
 
 	// =============================== Event ===============================
 
@@ -29,21 +40,47 @@
 	})
 	const tip = ref("服务未启动")
 
+	let isRunning = false
+
 	function btnStartClick(event) {
 		event.target.blur()
 		if (event.target.nodeName === 'SPAN') {
 			event.target.parentNode.blur()
 		}
-		btnStartStatus.value.type = "primary"
-		btnStartStatus.value.disabled = true
-		btnStartStatus.value.icon = "loading"
-		tip.value = "正在启动"
-		setTimeout(() => {
-			btnStartStatus.value.type = "success"
+		if (!isRunning) {
+			isRunning = true
+			btnStartStatus.value.type = "primary"
+			btnStartStatus.value.disabled = true
+			btnStartStatus.value.icon = "loading"
+			tip.value = "正在启动"
+			webServer.start(() => {
+				btnStartStatus.value.type = "success"
+				btnStartStatus.value.disabled = false
+				btnStartStatus.value.icon = "check"
+				tip.value = "服务已启动, 本机IP: 获取中"
+				networkinterface.getWiFiIPAddress(address => {
+					tip.value = "服务已启动, 本机IP: " + address.ip
+				}, err => {
+					console.error(err)
+					tip.value = "服务已启动, 本机IP: 获取失败"
+				})
+			}, err => {
+				isRunning = false
+				console.error(err)
+				alert(JSON.stringify(err))
+				btnStartStatus.value.type = "danger"
+				btnStartStatus.value.disabled = false
+				btnStartStatus.value.icon = "SwitchButton"
+				tip.value = "启动服务时发生错误"
+			}, 25521)
+		} else {
+			isRunning = false
+			webServer.stop()
+			btnStartStatus.value.type = "primary"
 			btnStartStatus.value.disabled = false
-			btnStartStatus.value.icon = "check"
-			tip.value = "服务已启动, 本机IP: 127.0.0.1"
-		}, 1000)
+			btnStartStatus.value.icon = "SwitchButton"
+			tip.value = "服务已停止"
+		}
 	}
 </script>
 

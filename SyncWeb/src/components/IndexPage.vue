@@ -77,15 +77,15 @@
 	onMounted(() => {
 		loadIPInfo()
 		initTaskManager()
-		// for (let i = 0; i < 2; i++) {
-		// 	window.postMessage({
-		// 		event: "add_ciphermap",
-		// 		name: "taasdadadasdasdsaasdasdashdiaiudnasidsk_" + i,
-		// 		id: "id_" + i,
-		// 		image: "https://lf-ciphercdn-cn.picovr.com/obj/lf-game-lf/gdl_app_405727/mapper/cover/backtoyou.png",
-		// 		base64: "a"
-		// 	})
-		// }
+		for (let i = 0; i < 2; i++) {
+			window.postMessage({
+				event: "add_ciphermap",
+				name: "taasdadadasdasdsaasdasdashdiaiudnasidsk_" + i,
+				id: "id_" + i,
+				image: "https://lf-ciphercdn-cn.picovr.com/obj/lf-game-lf/gdl_app_405727/mapper/cover/backtoyou.png",
+				base64: "a"
+			})
+		}
 		connStateManager.onStateChange(onConnStateChange)
 	})
 
