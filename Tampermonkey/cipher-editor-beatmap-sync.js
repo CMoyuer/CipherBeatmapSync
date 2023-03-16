@@ -14,6 +14,7 @@
 // ==/UserScript==
 
 const $ = window.jQuery;
+const syncWebUrl = "http://127.0.0.1:3000"
 let JSZip = "";
 
 // ================================= 工具类 =================================
@@ -202,8 +203,7 @@ class WebSync {
         return new Promise(function (resolve, reject) {
             let win = WebSync._syncWindow
             if (!win || win.closed) {
-                win = window.open("http://127.0.0.1:3000", null,
-                    "height=600,width=400,resizable=0,status=0,toolbar=0,menubar=0,location=0,status=0")
+                win = window.open(syncWebUrl, null, "height=600,width=400,resizable=0,status=0,toolbar=0,menubar=0,location=0,status=0")
                 WebSync._syncWindow = win
                 WebSync._ready = false
             }
@@ -356,39 +356,59 @@ async function initScript() {
  * 添加同步按钮
  */
 function addSyncButton() {
-    // 修复从edit返回到home时谱面顺序延时排列的问题
-
+    // TODO 修复从edit返回到home时谱面顺序延时排列的问题
 
     // 首页按钮
-    let btnList = $(".css-u4seia")
-    for (let i = 0; i < btnList.length; i++) {
-        let btn = btnList[i]
-        if (btn.attributes.tabindex.value !== "-1") continue
-        let parentNode = $(btn.parentNode)
-        if (parentNode.find("#btn-sync").length > 0) continue
-        // 复制一个按钮
-        let btnSync = $(parentNode[0].childNodes[0]).clone()
-        btnSync[0].id = "btn-sync"
-        // 修改icon
-        let svg = btnSync.find("svg")[0]
-        svg.attributes.viewBox.value = "0 0 1024 1024"
-        let path = btnSync.find("path")[0]
-        path.attributes.d.value = "M779.07437 412.216889a18.962963 18.962963 0 0 1 26.737778 2.161778l111.634963 131.356444a18.962963 18.962963 0 0 1-14.449778 31.250963h-50.251852c-13.274074 70.769778-47.407407 136.343704-99.555555 188.491852-139.58637 139.567407-364.980148 141.027556-506.349037 4.361481l-4.437333-4.361481a62.862222 62.862222 0 0 1 86.091851-91.515259l2.787556 2.616889c91.97037 91.97037 241.057185 91.97037 332.98963 0a234.268444 234.268444 0 0 0 59.354074-99.593482h-43.918223a18.962963 18.962963 0 0 1-14.449777-31.250963l111.634963-131.356444a18.962963 18.962963 0 0 1 2.18074-2.161778z m-35.858963-179.749926l4.437334 4.361481a62.862222 62.862222 0 0 1-86.110815 91.51526l-2.787556-2.616889c-91.97037-91.97037-241.038222-91.97037-332.989629 0a234.458074 234.458074 0 0 0-56.149334 89.6l40.732445 0.018963a18.962963 18.962963 0 0 1 14.449778 31.250963l-111.653926 131.337481a18.962963 18.962963 0 0 1-28.899556 0l-111.653926-131.337481a18.962963 18.962963 0 0 1 14.449778-31.250963h52.261926a359.784296 359.784296 0 0 1 97.564444-178.517334c139.567407-139.567407 364.980148-141.027556 506.349037-4.361481z"
-        // 修改文字
-        btnSync[0].innerHTML = btnSync[0].innerHTML.replace(/>*\W{1,}$/, ">同步")
-        // 绑定点击事件
-        btnSync[0].onclick = e => {
-            CipherUtils.getSongInfoFromHomeButton(e).then(songInfo => {
-                sendTaskToSyncWeb(songInfo).catch(err => {
+    {
+        let btnList = $(".css-onrhul")
+        if (btnList.length > 0) {
+            let btn = btnList[0]
+            let parentNode = $(btn.parentNode)
+            if (parentNode.find("#sync-web").length == 0) {
+                let webBtn = $(btn).clone()[0]
+                webBtn.id = "sync-web"
+                webBtn.innerHTML = "同步助手"
+                webBtn.style["margin-left"] = "0"
+                webBtn.style["color"] = "rgb(0, 230, 118)"
+                webBtn.style["border"] = "1px solid rgba(0, 230, 118, 0.5)"
+                webBtn.onclick = () => { WebSync.getWindow().then(win => win.focus()) }
+                parentNode.append(webBtn)
+            }
+        }
+    }
+
+    // 首页谱面更多按钮
+    {
+        let btnList = $(".css-u4seia")
+        for (let i = 0; i < btnList.length; i++) {
+            let btn = btnList[i]
+            if (btn.attributes.tabindex.value !== "-1") continue
+            let parentNode = $(btn.parentNode)
+            if (parentNode.find("#btn-sync").length > 0) continue
+            // 复制一个按钮
+            let btnSync = $(parentNode[0].childNodes[0]).clone()
+            btnSync[0].id = "btn-sync"
+            // 修改icon
+            let svg = btnSync.find("svg")[0]
+            svg.attributes.viewBox.value = "0 0 1024 1024"
+            let path = btnSync.find("path")[0]
+            path.attributes.d.value = "M779.07437 412.216889a18.962963 18.962963 0 0 1 26.737778 2.161778l111.634963 131.356444a18.962963 18.962963 0 0 1-14.449778 31.250963h-50.251852c-13.274074 70.769778-47.407407 136.343704-99.555555 188.491852-139.58637 139.567407-364.980148 141.027556-506.349037 4.361481l-4.437333-4.361481a62.862222 62.862222 0 0 1 86.091851-91.515259l2.787556 2.616889c91.97037 91.97037 241.057185 91.97037 332.98963 0a234.268444 234.268444 0 0 0 59.354074-99.593482h-43.918223a18.962963 18.962963 0 0 1-14.449777-31.250963l111.634963-131.356444a18.962963 18.962963 0 0 1 2.18074-2.161778z m-35.858963-179.749926l4.437334 4.361481a62.862222 62.862222 0 0 1-86.110815 91.51526l-2.787556-2.616889c-91.97037-91.97037-241.038222-91.97037-332.989629 0a234.458074 234.458074 0 0 0-56.149334 89.6l40.732445 0.018963a18.962963 18.962963 0 0 1 14.449778 31.250963l-111.653926 131.337481a18.962963 18.962963 0 0 1-28.899556 0l-111.653926-131.337481a18.962963 18.962963 0 0 1 14.449778-31.250963h52.261926a359.784296 359.784296 0 0 1 97.564444-178.517334c139.567407-139.567407 364.980148-141.027556 506.349037-4.361481z"
+            // 修改文字
+            btnSync[0].innerHTML = btnSync[0].innerHTML.replace(/>*\W{1,}$/, ">同步")
+            // 绑定点击事件
+            btnSync[0].onclick = e => {
+                CipherUtils.getSongInfoFromHomeButton(e).then(songInfo => {
+                    sendTaskToSyncWeb(songInfo).catch(err => {
+                        console.error(err)
+                        alert("同步失败!")
+                    })
+                }).catch(err => {
                     console.error(err)
                     alert("同步失败!")
                 })
-            }).catch(err => {
-                console.error(err)
-                alert("同步失败!")
-            })
+            }
+            parentNode.append(btnSync[0])
         }
-        parentNode.append(btnSync[0])
     }
     // 导出页面
     let divList = $(".css-1tiz3p0")

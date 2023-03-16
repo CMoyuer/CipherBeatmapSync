@@ -87,9 +87,13 @@ function processTaskQueue() {
 	if (taskInfo._status == TASK_STAUS.ADD || taskInfo._status == TASK_STAUS.FAIL) {
 		taskLock = true
 		changeTaskStatus(taskId, TASK_STAUS.POSTING)
-		postFile(taskId).then((flag) => {
+		postFile(taskId).then(() => {
 			changeTaskStatus(taskId, TASK_STAUS.SUCCESS)
 			setTimeout(() => {
+				changeTaskStatus(taskId, TASK_STAUS.REMOVE)
+				delete taskSets[taskId]
+				let index = taskIds[taskId]
+				taskIds.splice(index, 1)
 				taskLock = false
 			}, 500)
 		}).catch((err) => {
@@ -109,10 +113,15 @@ function processTaskQueue() {
  */
 async function postFile(taskId) {
 	let taskInfo = taskSets[taskId]
-	let formData = new FormData()
-	formData.append("name", taskInfo.name)
-	formData.append("base64", taskInfo.base64)
-	let res = await axios.postForm(api_url + "upload_beatmap", formData)
+	let body = {
+		name: taskInfo.name,
+		base64: taskInfo.base64
+	}
+	let res = await axios.post(api_url + "upload_beatmap", body, {
+		headers: {
+			"Content-Type": "application/json;charset=utf-8;"
+		}
+	})
 	if (res.data.code < 200 || res.data.code >= 300)
 		throw res.data.message
 }

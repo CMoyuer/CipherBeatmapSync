@@ -25,11 +25,35 @@
 
 	// =============================== Par ===============================
 
-	// =============================== Event ===============================
+	// ============================== Event ==============================
 
 	onMounted(() => {
 		webServer.init()
 	})
+
+	// ============================ Permission ============================
+
+	/**
+	 * 检查必备权限
+	 */
+	function checkPermission() {
+		return new Promise((resolve, reject) => {
+			let permissions = cordova.plugins.permissions
+			permissions.checkPermission(permissions.WRITE_EXTERNAL_STORAGE, status => {
+				if (status.hasPermission) {
+					resolve()
+				} else {
+					permissions.requestPermission(permissions.WRITE_EXTERNAL_STORAGE, status => {
+						if (status.hasPermission) resolve()
+					}, reject)
+				}
+			}, () => {
+				permissions.requestPermission(permissions.WRITE_EXTERNAL_STORAGE, status => {
+					if (status.hasPermission) resolve()
+				}, reject)
+			})
+		})
+	}
 
 	// =============================== Event ===============================
 
@@ -48,31 +72,33 @@
 			event.target.parentNode.blur()
 		}
 		if (!isRunning) {
-			isRunning = true
-			btnStartStatus.value.type = "primary"
-			btnStartStatus.value.disabled = true
-			btnStartStatus.value.icon = "loading"
-			tip.value = "正在启动"
-			webServer.start(() => {
-				btnStartStatus.value.type = "success"
-				btnStartStatus.value.disabled = false
-				btnStartStatus.value.icon = "check"
-				tip.value = "服务已启动, 本机IP: 获取中"
-				networkinterface.getWiFiIPAddress(address => {
-					tip.value = "服务已启动, 本机IP: " + address.ip
+			checkPermission().then(() => {
+				isRunning = true
+				btnStartStatus.value.type = "primary"
+				btnStartStatus.value.disabled = true
+				btnStartStatus.value.icon = "loading"
+				tip.value = "正在启动"
+				webServer.start(() => {
+					btnStartStatus.value.type = "success"
+					btnStartStatus.value.disabled = false
+					btnStartStatus.value.icon = "check"
+					tip.value = "服务已启动, 本机IP: 获取中"
+					networkinterface.getWiFiIPAddress(address => {
+						tip.value = "服务已启动, 本机IP: " + address.ip
+					}, err => {
+						console.error(err)
+						tip.value = "服务已启动, 本机IP: 获取失败"
+					})
 				}, err => {
+					isRunning = false
 					console.error(err)
-					tip.value = "服务已启动, 本机IP: 获取失败"
-				})
-			}, err => {
-				isRunning = false
-				console.error(err)
-				alert(JSON.stringify(err))
-				btnStartStatus.value.type = "danger"
-				btnStartStatus.value.disabled = false
-				btnStartStatus.value.icon = "SwitchButton"
-				tip.value = "启动服务时发生错误"
-			}, 25521)
+					alert(JSON.stringify(err))
+					btnStartStatus.value.type = "danger"
+					btnStartStatus.value.disabled = false
+					btnStartStatus.value.icon = "SwitchButton"
+					tip.value = "启动服务时发生错误"
+				}, 25521)
+			})
 		} else {
 			isRunning = false
 			webServer.stop()
