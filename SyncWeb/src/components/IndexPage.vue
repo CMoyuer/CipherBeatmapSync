@@ -66,7 +66,7 @@
 	import axios from 'axios'
 	import {
 		onMounted,
-		onUnmounted,
+		onBeforeUnmount,
 		ref
 	} from 'vue'
 	import * as connStateManager from "../utils/ConnStateManager.js"
@@ -85,10 +85,13 @@
 		connStateManager.onStateChange(onConnStateChange)
 		taskManager.setOnStatusChanged(taskStatusChanged)
 		initDragEvent()
+		window.opener.postMessage({
+			event: "syncweb-alive"
+		}, "*")
 	})
 
-	onUnmounted(() => {
-		// Do Nothing
+	onBeforeUnmount(() => {
+
 	})
 
 	// =========================================== 拖拽添加文件 ===========================================
@@ -220,6 +223,7 @@
 	 */
 	function initTaskManager() {
 		window.addEventListener("message", (res) => {
+			console.log(res)
 			let data = res.data
 			if (!data || !data.event) return
 			if (data.event === "add_ciphermap") {
