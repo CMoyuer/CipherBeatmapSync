@@ -26,7 +26,11 @@ export async function getBaseInfo(file) {
 		"data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAJVJREFUaEPt0sEJACEQxVDtv8dpRXsIBESy9/lg3u6ZOeuDb/eQxxQTeQxkJZKIVKBfSwqLZxPB6aTDRKSweDYRnE46TEQKi2cTwemkw0SksHg2EZxOOkxECotnE8HppMNEpLB4NhGcTjpMRAqLZxPB6aTDRKSweDYRnE46TEQKi2cTwemkw0SksHg2EZxOOkxECotnL518tBVnSSK1AAAAAElFTkSuQmCC"
 
 	let name = mapInfo.match(/songName:\s\"?(.*)/)[1]
-	name = name.replace("\"","")
+	name = name.replace("\"", "")
+	let repList = ["/", "\\", ":", "*", "<", ">", "|", " "]
+	for(let i = 0;i < repList.length;i++)
+		name = name.replace(repList[i], "_")
+
 	let base64 = await blobToBase64(file)
 
 	return {

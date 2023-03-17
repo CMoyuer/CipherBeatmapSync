@@ -68,8 +68,8 @@ export function offStateChange(callback) {
  * 获取连接状态
  */
 function updateConnectState() {
-	axios.get(api_url + "version", {
-		timeout: 1000,
+	axios.get(api_url + "version?t=" + new Date().getTime(), {
+		timeout: 3000,
 		headers: {
 			"Access-Control-Allow-Origin": "*",
 			// "Access-Control-Allow-Credentials": true

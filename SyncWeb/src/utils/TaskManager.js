@@ -118,6 +118,7 @@ async function postFile(taskId) {
 		base64: taskInfo.base64
 	}
 	let res = await axios.post(api_url + "upload_beatmap", body, {
+		timeout: 10 * 1000,
 		headers: {
 			"Content-Type": "application/json;charset=utf-8;"
 		}

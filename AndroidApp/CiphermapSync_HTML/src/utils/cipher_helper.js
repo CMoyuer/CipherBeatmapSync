@@ -13,10 +13,10 @@ export async function addBeatmap(info) {
 	await fileManager.saveBlobFile(zipBlob, cordova.file.externalDataDirectory, "", zipFileName)
 	try {
 		// 解压
-		let rootDir = cordova.file.externalDataDirectory
-		let tarDir = info.name
-		// let rootDir = cordova.file.externalRootDirectory
-		// let tarDir = "/Android/data/com.bytedance.cipher/files/Ciphermap/CustomLevels/" + info.name
+		// let rootDir = cordova.file.externalDataDirectory
+		// let tarDir = info.name
+		let rootDir = cordova.file.externalRootDirectory
+		let tarDir = "Android/data/com.bytedance.cipher/files/Ciphermap/CustomLevels/" + info.name
 		await fileManager.removeDirectory(rootDir, tarDir)
 		await fileManager.unzip(cordova.file.externalDataDirectory + zipFileName,
 			rootDir + tarDir)

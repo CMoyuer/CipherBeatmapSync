@@ -137,6 +137,7 @@
 					res.event = "add_ciphermap"
 					window.postMessage(res)
 				}).catch(err => {
+					console.error(err)
 					console.warn(file.name, err)
 					ElMessage.error('导入失败啦, \r\n看看控制台怎么回事吧')
 				})

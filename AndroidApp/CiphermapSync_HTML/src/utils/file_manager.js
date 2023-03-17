@@ -35,7 +35,8 @@ export async function saveBlobFile(blob, rootDir, dir, fileName) {
 		let path = dirList[i]
 		if (!path) continue
 		dirEntry = await _getDirectory(dirEntry, path, {
-			create: true
+			create: true,
+			exclusive: false
 		})
 	}
 	// 创建文件
