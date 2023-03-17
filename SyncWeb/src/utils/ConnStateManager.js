@@ -72,7 +72,7 @@ function updateConnectState() {
 		timeout: 1000,
 		headers: {
 			"Access-Control-Allow-Origin": "*",
-			"Access-Control-Allow-Credentials": true
+			// "Access-Control-Allow-Credentials": true
 		}
 	}).then(res => {
 		if (!isRunning) return

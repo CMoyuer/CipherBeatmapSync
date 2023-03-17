@@ -1,7 +1,7 @@
 <template>
 	<el-container style="height: 100%;">
 		<el-header class="title">Cipher谱面同步助手</el-header>
-		<el-main>
+		<el-main class="main-box">
 			<el-button circle @click="btnStartClick" class="btn-start" :disabled="btnStartStatus.disabled"
 				:icon="btnStartStatus.icon == 'loading' ? Loading : btnStartStatus.type == 'check' ? Check : SwitchButton"
 				:type="btnStartStatus.type" />
@@ -78,7 +78,7 @@
 				btnStartStatus.value.disabled = true
 				btnStartStatus.value.icon = "loading"
 				tip.value = "正在启动"
-				webServer.start(() => {
+				let succ = () => {
 					btnStartStatus.value.type = "success"
 					btnStartStatus.value.disabled = false
 					btnStartStatus.value.icon = "check"
@@ -89,14 +89,19 @@
 						console.error(err)
 						tip.value = "服务已启动, 本机IP: 获取失败"
 					})
-				}, err => {
-					isRunning = false
-					console.error(err)
-					alert(JSON.stringify(err))
-					btnStartStatus.value.type = "danger"
-					btnStartStatus.value.disabled = false
-					btnStartStatus.value.icon = "SwitchButton"
-					tip.value = "启动服务时发生错误"
+				}
+				webServer.start(succ, err => {
+					if (err === "Server already running") {
+						succ()
+					} else {
+						isRunning = false
+						console.error(err)
+						alert(JSON.stringify(err))
+						btnStartStatus.value.type = "danger"
+						btnStartStatus.value.disabled = false
+						btnStartStatus.value.icon = "SwitchButton"
+						tip.value = "启动服务时发生错误"
+					}
 				}, 25521)
 			})
 		} else {
@@ -112,19 +117,28 @@
 
 <style scoped>
 	.title {
-		background-color: #66b1ff;
 		font-size: 18px;
 		font-weight: bold;
-		height: auto;
 		color: white;
 		padding: 10px;
+		height: auto;
+		background-image: -webkit-linear-gradient(top, #47a9f3, #2196f3);
+		box-shadow: rgb(0 0 0 / 20%) 0px 2px 4px -1px, rgb(0 0 0 / 14%) 0px 4px 5px 0px, rgb(0 0 0 / 12%) 0px 1px 10px 0px;
+	}
+
+	.main-box {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.btn-start {
-		margin-top: 80px;
-		width: 40vw;
-		height: 40vw;
-		font-size: 16vw;
+		width: 40vh;
+		height: 40vh;
+		font-size: 16vh;
+
+		box-shadow: #00000040 1px 1px 6px 2px;
 	}
 
 	.tip {

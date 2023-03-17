@@ -17,7 +17,8 @@
     "cordova-plugin-android-permissions": "^1.1.5",
     "cordova-plugin-file": "^7.0.0",
     "cordova-plugin-networkinterface": "github:salbahra/cordova-plugin-networkinterface",
-    "cordova-plugin-webserver": "github:bykof/cordova-plugin-webserver"
+    "cordova-plugin-webserver": "github:bykof/cordova-plugin-webserver",
+    "cordova-plugin-zip": "^3.1.0"
   },
   "cordova": {
     "platforms": [
@@ -29,7 +30,8 @@
       "cordova-plugin-android-permissions": {},
       "cordova-plugin-file": {
         "ANDROIDX_WEBKIT_VERSION": "1.4.0"
-      }
+      },
+      "cordova-plugin-zip": {}
     }
   }
 }

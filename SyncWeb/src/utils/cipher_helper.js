@@ -22,8 +22,11 @@ export async function getBaseInfo(file) {
 			mapInfo = await zip.file(fileName).async("string")
 		}
 	}
+	if (!image) image =
+		"data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAJVJREFUaEPt0sEJACEQxVDtv8dpRXsIBESy9/lg3u6ZOeuDb/eQxxQTeQxkJZKIVKBfSwqLZxPB6aTDRKSweDYRnE46TEQKi2cTwemkw0SksHg2EZxOOkxECotnE8HppMNEpLB4NhGcTjpMRAqLZxPB6aTDRKSweDYRnE46TEQKi2cTwemkw0SksHg2EZxOOkxECotnL518tBVnSSK1AAAAAElFTkSuQmCC"
 
-	let name = mapInfo.match(/songName:\s\"(.*)\"/)[1]
+	let name = mapInfo.match(/songName:\s\"?(.*)/)[1]
+	name = name.replace("\"","")
 	let base64 = await blobToBase64(file)
 
 	return {

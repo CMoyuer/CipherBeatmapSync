@@ -21,7 +21,7 @@
 					:closable="false" />
 			</div>
 			<div class="class-name">任务列表</div>
-			<div class="list-box">
+			<el-scrollbar class="list-box">
 				<TransitionGroup name="list-box">
 					<div v-for="(item, taskId) in taskInfoSets" :key="item" class="item-box"
 						:class="taskStatus[taskId] === TASK_STAUS.SUCCESS ? 'item-box-success': taskStatus[taskId] === TASK_STAUS.FAIL ? 'item-box-failed' : 'item-box-default'">
@@ -29,7 +29,7 @@
 							<el-aside>
 								<el-image :src="item.image" />
 							</el-aside>
-							<el-main>
+							<el-main class="song-name">
 								{{item.name}}
 							</el-main>
 							<el-aside style="min-width: 16px;margin-right: 10px;">
@@ -44,8 +44,12 @@
 						</el-container>
 					</div>
 				</TransitionGroup>
-				<el-empty v-if="Object.keys(taskInfoSets) == 0" description="暂时没有任务" />
-			</div>
+				<el-empty v-if="Object.keys(taskInfoSets) == 0" description="暂时没有任务">
+					<div class="el-empty__description" style="height: auto;margin-top:0;">
+						<p>可拖拽谱面压缩包文件到这里进行上传</p>
+					</div>
+				</el-empty>
+			</el-scrollbar>
 		</el-main>
 	</el-container>
 
@@ -85,9 +89,11 @@
 		connStateManager.onStateChange(onConnStateChange)
 		taskManager.setOnStatusChanged(taskStatusChanged)
 		initDragEvent()
-		window.opener.postMessage({
-			event: "syncweb-alive"
-		}, "*")
+		if (window.opener) {
+			window.opener.postMessage({
+				event: "syncweb-alive"
+			}, "*")
+		}
 	})
 
 	onBeforeUnmount(() => {
@@ -131,7 +137,7 @@
 					res.event = "add_ciphermap"
 					window.postMessage(res)
 				}).catch(err => {
-					console.error(err)
+					console.warn(file.name, err)
 					ElMessage.error('导入失败啦, \r\n看看控制台怎么回事吧')
 				})
 			}
@@ -198,6 +204,8 @@
 		setIpAddressTip(type, msg)
 		if (type === "success") {
 			taskManager.start()
+		}else if(type === "error"){
+			taskManager.stop()
 		}
 	}
 
@@ -223,12 +231,13 @@
 	 */
 	function initTaskManager() {
 		window.addEventListener("message", (res) => {
-			console.log(res)
 			let data = res.data
 			if (!data || !data.event) return
 			if (data.event === "add_ciphermap") {
 				delete data.event
 				taskManager.addTask(data)
+			} else {
+				console.log(res)
 			}
 		})
 	}
@@ -308,11 +317,10 @@
 	.title {
 		font-size: 18px;
 		font-weight: bold;
-		/* background-color: #409EFF; */
-		background-image: -webkit-linear-gradient(top, #73b9ff, #409EFF);
 		color: white;
 		padding: 10px;
 		height: auto;
+		background-image: -webkit-linear-gradient(top, #47a9f3, #2196f3);
 		box-shadow: rgb(0 0 0 / 20%) 0px 2px 4px -1px, rgb(0 0 0 / 14%) 0px 4px 5px 0px, rgb(0 0 0 / 12%) 0px 1px 10px 0px;
 	}
 
@@ -322,11 +330,12 @@
 
 	.class-name {
 		font-weight: bold;
-		margin-top: 10px;
+		margin: 10px 0px;
 	}
 
 	.list-box {
 		overflow: hidden;
+		height: calc(100vh - 190px);
 	}
 
 	.list-box-enter-active {
@@ -354,41 +363,50 @@
 
 		50% {
 			transform: translateX(400px);
-			margin-bottom: 0;
+			margin-bottom: 10px;
 		}
 
 		100% {
 			transform: translateX(400px);
 			opacity: 0;
-			margin-bottom: -62px;
+			margin-bottom: -52px;
 		}
 	}
 
 	.item-box {
 		border-radius: 8px;
-		border: 1px solid lightblue;
-		margin-top: 10px;
+		margin-bottom: 10px;
 		overflow: hidden;
 	}
 
 	.item-box-default {
 		background-color: #fafafa;
+		border: 1px solid lightblue;
 		color: gray;
 	}
 
 	.item-box-failed {
-		background-color: #ffcecf;
-		color: red;
+		background-color: var(--el-color-error-light-9);
+		color: var(--el-color-error);
+		border: 1px solid var(--el-color-error);
 	}
 
 	.item-box-success {
-		background-color: #55ff7f;
-		color: green;
+		background-color: var(--el-color-success-light-9);
+		color: var(--el-color-success);
+		border: 1px solid var(--el-color-success);
 	}
 
 	.item-box .el-image {
 		max-width: 50px;
 		margin-bottom: -4px;
+	}
+
+	.item-box .song-name {
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		font-size: 14px;
 	}
 
 	.item-box .el-aside {

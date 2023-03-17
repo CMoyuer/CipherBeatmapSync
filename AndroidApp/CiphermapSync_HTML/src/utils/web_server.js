@@ -50,7 +50,8 @@ function sendSuccessResponseJSON(requestId, data) {
 		status: 200,
 		body: JSON.stringify(response),
 		headers: {
-			'Content-Type': "application/json;charset=utf-8;"
+			'Content-Type': "application/json;charset=utf-8;",
+			'Access-Control-Allow-Origin': '*',
 		}
 	})
 }
@@ -66,7 +67,7 @@ function sendSuccessResponseEmpty(requestId) {
 		headers: {
 			'Content-Type': "text/html;",
 			'Access-Control-Allow-Origin': '*',
-			'Access-Control-Allow-Headers': '*'
+			'Access-Control-Allow-Headers': '*',
 		}
 	})
 }
@@ -75,13 +76,35 @@ function sendSuccessResponseEmpty(requestId) {
  * 发送错误回调
  * @param {string} requestId
  * @param {number} errCode
+ * @param {string} errMsg
  */
-function sendErrorResponse(requestId, errCode) {
+function sendErrorResponse(requestId, errCode, errMsg) {
+	let response = {
+		code: errCode,
+		data: {},
+		message: errMsg
+	}
 	webserver.sendResponse(requestId, {
-		status: errCode,
+		status: 200,
+		body: JSON.stringify(response),
+		headers: {
+			'Content-Type': "application/json;charset=utf-8;",
+			'Access-Control-Allow-Origin': '*',
+		}
+	})
+}
+
+/**
+ * 发送404回调
+ * @param {string} requestId
+ */
+function sendErrorResponse404(requestId) {
+	webserver.sendResponse(requestId, {
+		status: 404,
 		body: "",
 		headers: {
-			'Content-Type': "text/html;"
+			'Content-Type': "text/html;",
+			'Access-Control-Allow-Origin': '*',
 		}
 	})
 }
@@ -89,11 +112,10 @@ function sendErrorResponse(requestId, errCode) {
 // ========================= Request =========================
 
 /**
- * Web请求回调
+ * 处理Web请求
  * @param {REQUESTI_INFO} req
  */
 function onWebRequest(req) {
-	console.log(req)
 	try {
 		if (req.method === "GET") {
 			if (onGetRequest(req)) return
@@ -102,15 +124,15 @@ function onWebRequest(req) {
 		} else if (req.method === "OPTIONS") {
 			if (onOptionsRequest(req)) return
 		}
-		sendErrorResponse(req.requestId, 404)
+		sendErrorResponse404(req.requestId)
 	} catch (e) {
-		sendErrorResponse(req.requestId, 500)
+		sendErrorResponse(req.requestId, 500, e)
 		console.error(e)
 	}
 }
 
 /**
- * Web请求回调
+ * 处理Get请求
  * @param {REQUESTI_INFO} req
  * @return {boolean}
  */
@@ -126,7 +148,7 @@ function onGetRequest(req) {
 }
 
 /**
- * Web请求回调
+ * 处理Post请求
  * @param {REQUESTI_INFO} req
  * @return {boolean}
  */
@@ -134,13 +156,13 @@ function onPostRequest(req) {
 	if (req.path === "/upload_beatmap") {
 		let info = JSON.parse(req.body)
 		if (!info.base64 || !info.name) {
-			sendErrorResponse(req.requestId, 400)
+			sendErrorResponse(req.requestId, 400, "parameter error")
 		} else {
 			cipher.addBeatmap(info).then(() => {
 				sendSuccessResponseJSON(req.requestId, {})
 			}).catch(err => {
 				console.error(err)
-				sendErrorResponse(req.requestId, 500)
+				sendErrorResponse(req.requestId, 500, err)
 			})
 		}
 	} else {
@@ -150,7 +172,7 @@ function onPostRequest(req) {
 }
 
 /**
- * Web请求回调
+ * 处理Options请求
  * @param {REQUESTI_INFO} req
  * @return {boolean}
  */

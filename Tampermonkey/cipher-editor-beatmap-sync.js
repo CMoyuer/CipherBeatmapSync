@@ -454,7 +454,7 @@ async function sendTaskToSyncWeb(songRawInfo) {
         songInfo.image = await Utils.blobToBase64(imageBlob)
     } catch (err) {
         console.warn("获取封面图失败", err)
-        songInfo.image = "data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAJVJREFUaEPt0sEJACEQxVDtv8dpRXsIBESy9/lg3u6ZOeuDb/eQxxQTeQxkJZKIVKBfSwqLZxPB6aTDRKSweDYRnE46TEQKi2cTwemkw0SksHg2EZxOOkxECotnE8HppMNEpLB4NhGcTjpMRAqLZxPB6aTDRKSweDYRnE46TEQKi2cTwemkw0SksHg2EZxOOkxECotnL518tBVnSSK1AAAAAElFTkSuQmCC"
+        songInfo.image = ""
     } finally {
         BLITZ_RHYTHM_FILES.close()
     }
