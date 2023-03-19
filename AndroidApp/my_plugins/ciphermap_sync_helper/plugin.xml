@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cc.moyuer.ciphermap_sync_helper" version="1.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+	<name>CiphermapSyncHelper</name>
+	<js-module name="ciphermap_sync_helper" src="www/main.js">
+		<clobbers target="ciphermap_sync_helper"/>
+	</js-module>
+	<platform name="android">
+		<config-file parent="/*" target="res/xml/config.xml">
+            <feature name="ciphermap_sync_helper">
+                <param name="android-package" value="cc.moyuer.ciphermap_sync_helper.main"/>
+                <param name="onload" value="true"/>
+            </feature>
+        </config-file>
+		
+		<config-file parent="/*" target="AndroidManifest.xml">
+            <uses-permission android:name="android.permission.INTERNET"/>
+            <!--需动态申请的权限-->
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+		</config-file>
+		<config-file file="/*" target="AndroidManifest.xml" parent="application">
+			<service
+				android:name="cc.moyuer.ciphermap_sync_helper.MainService"
+				android:enabled="true"
+				android:exported="true" />
+		</config-file>
+		
+		<source-file src="src/android/main.java" target-dir="src/cc/moyuer/ciphermap_sync_helper"/>
+		<source-file src="src/android/Config.java" target-dir="src/cc/moyuer/ciphermap_sync_helper"/>
+		<source-file src="src/android/Global.java" target-dir="src/cc/moyuer/ciphermap_sync_helper"/>
+		<source-file src="src/android/Utils.java" target-dir="src/cc/moyuer/ciphermap_sync_helper"/>
+		<source-file src="src/android/MainService.java" target-dir="src/cc/moyuer/ciphermap_sync_helper"/>
+		<source-file src="src/android/WebServerController.java" target-dir="src/cc/moyuer/ciphermap_sync_helper"/>
+        
+        <framework src="src/android/build.gradle" custom="true" type="gradleReference"/>
+	</platform>
+</plugin>

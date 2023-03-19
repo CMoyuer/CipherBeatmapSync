@@ -113,11 +113,11 @@ function processTaskQueue() {
  */
 async function postFile(taskId) {
 	let taskInfo = taskSets[taskId]
-	let body = {
-		name: taskInfo.name,
-		base64: taskInfo.base64
-	}
-	let res = await axios.post(api_url + "upload_beatmap", body, {
+	
+	let formData = new FormData()
+	formData.append("name", taskInfo.name)
+	formData.append("base64", taskInfo.base64)
+	let res = await axios.postForm(api_url + "upload_beatmap", formData, {
 		timeout: 10 * 1000,
 		headers: {
 			"Content-Type": "application/json;charset=utf-8;"

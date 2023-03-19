@@ -1,0 +1,15 @@
+apply plugin: 'com.yanzhenjie.andserver'
+
+dependencies {
+//    implementation project(path: ':keepalive')
+//    implementation('javax.activation:javax.activation-api:1.2.0')
+    implementation('com.yanzhenjie.andserver:api:2.1.11')
+    annotationProcessor('com.yanzhenjie.andserver:processor:2.1.11')
+}
+
+// 需要剪切到根目录build.gradle上
+// buildscript {
+// 	dependencies {
+// 		classpath 'com.yanzhenjie.andserver:plugin:2.1.11' // AndServer
+// 	}
+// }
