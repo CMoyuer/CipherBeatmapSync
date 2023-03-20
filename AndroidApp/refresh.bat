@@ -1,0 +1,1 @@
+cordova plugin rm cordova-plugin-ciphermap-sync & cordova plugin add ./my_plugins/cordova-plugin-ciphermap-sync

@@ -13,7 +13,7 @@
   "author": "Apache Cordova Team",
   "license": "Apache-2.0",
   "devDependencies": {
-    "ciphermap_sync_helper": "file:my_plugins/ciphermap_sync_helper",
+    "ciphermap_sync_helper": "file:my_plugins/cordova-plugin-ciphermap-sync",
     "cordova-android": "^10.1.2",
     "cordova-plugin-android-permissions": "^1.1.5",
     "cordova-plugin-networkinterface": "github:salbahra/cordova-plugin-networkinterface"
@@ -25,7 +25,7 @@
     "plugins": {
       "cordova-plugin-networkinterface": {},
       "cordova-plugin-android-permissions": {},
-      "cc.moyuer.ciphermap_sync_helper": {}
+      "cordova-plugin-ciphermap-sync": {}
     }
   }
 }

@@ -78,7 +78,7 @@
 				btnStartStatus.value.disabled = true
 				btnStartStatus.value.icon = "loading"
 				tip.value = "正在启动"
-				ciphermap_sync_helper.start(25521, null, err => {
+				ciphermap_sync_helper.start(null, err => {
 					isRunning = false
 					console.error(err)
 					btnStartStatus.value.type = "danger"

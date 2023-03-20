@@ -7,6 +7,9 @@
     </author>
     <content src="index.html" />
 	<preference name="Orientation" value="landscape" />
+	<preference name="android-minSdkVersion" value="25" />
+	<preference name="android-targetSdkVersion" value="32" />
+		
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
 	
