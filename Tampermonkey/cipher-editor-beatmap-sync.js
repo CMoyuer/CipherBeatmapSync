@@ -2,7 +2,7 @@
 // @name         闪韵灵镜铺面同步
 // @namespace    cipher-editor-beatmap-sync
 // @version      2.0
-// @description  通过BeatSaver导入铺面
+// @description  将谱面快速同步到VR一体机上
 // @author       如梦Nya
 // @license      MIT
 // @run-at       document-start
@@ -14,7 +14,7 @@
 // ==/UserScript==
 
 const $ = window.jQuery;
-const syncWebUrl = "http://127.0.0.1:3000"
+const syncWebUrl = "http://cmoyuer.gitee.io/ciphermap-sync-helper-sync-web/"
 let JSZip = "";
 
 // ================================= 工具类 =================================
@@ -376,7 +376,9 @@ function addSyncButton() {
             }
         }
     }
-
+	
+	// 未完善，暂时封印
+	/*
     // 首页谱面更多按钮
     {
         let btnList = $(".css-u4seia")
@@ -432,6 +434,7 @@ function addSyncButton() {
         }
         $(divList[0].parentNode).append(divBox)
     }
+	*/
 }
 
 /**
