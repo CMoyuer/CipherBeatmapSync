@@ -52,7 +52,7 @@ public class NotificationUtils extends ContextWrapper {
     public Notification.Builder getChannelNotification(String title, String content, int icon, Intent intent) {
         //PendingIntent.FLAG_UPDATE_CURRENT 这个类型才能传值
         PendingIntent pendingIntent;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+        if (android.os.Build.VERSION.SDK_INT >= 31) { // android.os.Build.VERSION_CODES.S
             pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         }else{
             pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -67,7 +67,7 @@ public class NotificationUtils extends ContextWrapper {
     public NotificationCompat.Builder getNotification_25(String title, String content, int icon, Intent intent) {
         //PendingIntent.FLAG_UPDATE_CURRENT 这个类型才能传值
         PendingIntent pendingIntent;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+        if (android.os.Build.VERSION.SDK_INT >= 31) { // android.os.Build.VERSION_CODES.S
             pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         }else{
             pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

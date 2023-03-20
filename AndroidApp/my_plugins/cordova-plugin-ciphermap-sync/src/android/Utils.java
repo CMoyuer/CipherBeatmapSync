@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Stack;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -50,7 +51,8 @@ public class Utils {
         try {
 //            String startStr = "data:application/zip;base64,";
 //            String startStr = "data:application/x-zip-compressed;base64,";
-            if (!base64.matches("^data:application/(x-)?zip(-compressed)?;base64,"))
+            Pattern pattern = Pattern.compile("^data:application/(x-)?zip(-compressed)?;base64,");
+            if (!pattern.matcher(base64).find())
                 throw new Exception("Base64 format error!");
             base64 = base64.substring(base64.indexOf(";base64,") + 8);
             byte[] compressed = Base64.decode(base64, Base64.DEFAULT);
