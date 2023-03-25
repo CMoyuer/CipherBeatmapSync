@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 import com.yanzhenjie.andserver.AndServer;
 import com.yanzhenjie.andserver.Server;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
@@ -49,6 +51,7 @@ public class MainService extends Service {
         webServerShutdown();
         try {
             webServer = AndServer.webServer(getApplicationContext())
+                    .inetAddress(InetAddress.getByAddress(new byte[]{0, 0, 0, 0}))
                     .port(Config.LISTEN_PORT)
                     .timeout(10, TimeUnit.SECONDS)
                     .listener(webServerListener)
