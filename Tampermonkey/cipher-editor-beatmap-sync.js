@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         闪韵灵镜铺面同步
+// @name         《闪韵灵镜谱面编辑器》同步助手
 // @namespace    cipher-editor-beatmap-sync
 // @version      2.1
 // @description  将谱面快速同步到VR一体机上
