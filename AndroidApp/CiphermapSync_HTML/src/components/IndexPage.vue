@@ -1,6 +1,6 @@
 <template>
 	<el-container style="height: 100%;">
-		<el-header class="title">Cipher谱面同步助手</el-header>
+		<el-header class="title">闪韵谱面同步助手</el-header>
 		<el-main class="main-box">
 			<el-button circle @click="btnStartClick" class="btn-start" :disabled="btnStartStatus.disabled"
 				:icon="btnStartStatus.icon == 'loading' ? Loading : btnStartStatus.type == 'check' ? Check : SwitchButton"

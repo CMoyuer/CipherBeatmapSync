@@ -1,7 +1,7 @@
 <template>
 	<el-container>
 		<el-header class="title">
-			闪韵灵镜 谱面同步助手
+			闪韵灵境 谱面同步助手
 		</el-header>
 		<el-main>
 			<div v-show="dropTip" class="drop-tip">
