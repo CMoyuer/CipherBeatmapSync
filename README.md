@@ -20,6 +20,12 @@
  - 浏览器增加同步小窗口，支持VR端连接状态监测、同步任务队列、自动重试、拖拽文件同步等功能
  - 使用Cordova混合开发方式重做了App
 
+### 设置浏览器安全策略（以Chrome浏览器为例）
+1. 在浏览器地址输入 chrome://flags/#block-insecure-private-network-requests
+2. 将Block insecure private network requests设置为Disabled
+
+![image](https://user-images.githubusercontent.com/51113234/233377193-04d8040f-4cc0-4d23-a5ad-999044f99785.png)
+
 ### 安装浏览器脚本
 1. 先在浏览器上安装一个[脚本管理器](https://greasyfork.org/zh-CN/help/installing-user-scripts)（比如Tampermonkey）
 2. 点击[这里](https://greasyfork.org/zh-CN/scripts/462205)安装脚本
