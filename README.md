@@ -20,6 +20,8 @@
  - 浏览器增加同步小窗口，支持VR端连接状态监测、同步任务队列、自动重试、拖拽文件同步等功能
  - 使用Cordova混合开发方式重做了App
 
+## 安装方法
+
 ### 设置浏览器安全策略（以Chrome浏览器为例）
 1. 在浏览器地址输入 chrome://flags/#block-insecure-private-network-requests
 2. 将Block insecure private network requests设置为Disabled
