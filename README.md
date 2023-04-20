@@ -5,7 +5,8 @@
 
 如有侵犯官方权益，请联系本人进行删除
 
-![image](https://user-images.githubusercontent.com/51113234/226376674-f1f7315a-b1d7-4d5d-9de6-68d84ac32b0d.png)
+![ezgif-3-bd996cf02b](https://user-images.githubusercontent.com/51113234/233357793-019da48a-ccd0-4f29-8969-00d50382d4cd.gif)
+![ezgif-3-7870bd9f4b](https://user-images.githubusercontent.com/51113234/233359990-0ea84380-b411-4afd-a728-2f92d95d6ed7.gif)
 
 ## 功能介绍
  - 为谱面编辑器增加“同步”按钮，快速同步在编谱子的数据到一体机上
@@ -32,8 +33,6 @@
 2. 在VR设备中，使用文件管理器打开并安装app
 
 ## 使用说明
-
-![ezgif-3-bd996cf02b](https://user-images.githubusercontent.com/51113234/233357793-019da48a-ccd0-4f29-8969-00d50382d4cd.gif)
 
 1. 在VR设备中打开“闪韵谱面同步助手”
 2. 点击正中间的“启动”按钮
