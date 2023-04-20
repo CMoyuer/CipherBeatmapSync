@@ -5,7 +5,7 @@
 // @description  将谱面快速同步到VR一体机上
 // @author       如梦Nya
 // @license      MIT
-// @run-at       document-start
+// @run-at       document-body
 // @grant        unsafeWindow
 // @grant        GM_info
 // @match        https://cipher-editor-cn.picovr.com/*
