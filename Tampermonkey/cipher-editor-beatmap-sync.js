@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         闪韵灵镜铺面同步
 // @namespace    cipher-editor-beatmap-sync
-// @version      2.0
+// @version      2.1
 // @description  将谱面快速同步到VR一体机上
 // @author       如梦Nya
 // @license      MIT
@@ -326,6 +326,9 @@ class CipherUtils {
 
 // ================================= 方法 =================================
 
+/** @type {{id:string, name:string, image:string, base64:string, timer:number}} */
+let query_ciphermap_info
+
 /**
  * 初始化
  */
@@ -341,9 +344,22 @@ async function initScript() {
     )
 
     window.addEventListener("message", event => {
-        if (!event.data || !event.data.event) return
-        if (event.data.event === "syncweb-alive") {
+        /** @type {{event:string}} */
+        let data = event.data
+        if (!data || !data.event) return
+        if (data.event === "syncweb-alive") {
             WebSync._ready = true
+        } else if (data.event === "result_ciphermap_zip") {
+            if (data.code !== 0 || !query_ciphermap_info || data.data.id !== query_ciphermap_info.id) return
+            clearTimeout(query_ciphermap_info.timer)
+            Utils.blobToBase64(data.data.blob).then(base64 => {
+                query_ciphermap_info.base64 = base64
+                WebSync.addTask(query_ciphermap_info)
+                query_ciphermap_info = undefined
+            }).catch(err => {
+                console.error("转换文件格式时出错:", err)
+                alert("转换文件格式时出错!")
+            })
         }
     })
 
@@ -376,9 +392,7 @@ function addSyncButton() {
             }
         }
     }
-	
-	// 未完善，暂时封印
-	/*
+
     // 首页谱面更多按钮
     {
         let btnList = $(".css-u4seia")
@@ -434,7 +448,6 @@ function addSyncButton() {
         }
         $(divList[0].parentNode).append(divBox)
     }
-	*/
 }
 
 /**
@@ -447,7 +460,8 @@ async function sendTaskToSyncWeb(songRawInfo) {
         id: songRawInfo.id,
         name: songRawInfo.name,
         image: "",
-        base64: ""
+        base64: "",
+        timer: 0
     }
     // 封面图片
     let imageName = songRawInfo.coverArtFilename
@@ -461,8 +475,14 @@ async function sendTaskToSyncWeb(songRawInfo) {
     } finally {
         BLITZ_RHYTHM_FILES.close()
     }
-    console.log(songInfo)
-    WebSync.addTask(songInfo)
+    // 谱面压缩包
+    songInfo.timer = setTimeout(() => {
+        console.warn("获取谱面压缩包失败: 编辑器超时未响应")
+        query_ciphermap_info = undefined
+        alert("获取谱面压缩包失败!")
+    }, 5000)
+    query_ciphermap_info = songInfo
+    unsafeWindow.postMessage({ event: "query_ciphermap_zip", id: songInfo.id })
 }
 
 // ================================= 入口 =================================
