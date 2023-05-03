@@ -5,7 +5,8 @@
 
 如有侵犯官方权益，请联系本人进行删除
 
-![image](https://user-images.githubusercontent.com/51113234/226376674-f1f7315a-b1d7-4d5d-9de6-68d84ac32b0d.png)
+![ezgif-3-bd996cf02b](https://user-images.githubusercontent.com/51113234/233357793-019da48a-ccd0-4f29-8969-00d50382d4cd.gif)
+![ezgif-3-7870bd9f4b](https://user-images.githubusercontent.com/51113234/233359990-0ea84380-b411-4afd-a728-2f92d95d6ed7.gif)
 
 ## 功能介绍
  - 为谱面编辑器增加“同步”按钮，快速同步在编谱子的数据到一体机上
@@ -18,6 +19,14 @@
  - 移除Chrome扩展程序、改用油猴插件，以支持其他浏览器（如：Firefox、Safari、Microsoft、Opera、Maxthon等）
  - 浏览器增加同步小窗口，支持VR端连接状态监测、同步任务队列、自动重试、拖拽文件同步等功能
  - 使用Cordova混合开发方式重做了App
+
+## 安装方法
+
+### 设置浏览器安全策略（以Chrome浏览器为例）
+1. 在浏览器地址输入 chrome://flags/#block-insecure-private-network-requests
+2. 将Block insecure private network requests设置为Disabled
+
+![image](https://user-images.githubusercontent.com/51113234/233377193-04d8040f-4cc0-4d23-a5ad-999044f99785.png)
 
 ### 安装浏览器脚本
 1. 先在浏览器上安装一个[脚本管理器](https://greasyfork.org/zh-CN/help/installing-user-scripts)（比如Tampermonkey）
@@ -32,6 +41,7 @@
 2. 在VR设备中，使用文件管理器打开并安装app
 
 ## 使用说明
+
 1. 在VR设备中打开“闪韵谱面同步助手”
 2. 点击正中间的“启动”按钮
 3. 在PC端谱面编辑器中，点击打开【同步助手】
