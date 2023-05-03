@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         《闪韵灵境谱面编辑器》同步助手
 // @namespace    cipher-editor-beatmap-sync
-// @version      2.1
+// @version      2.1.1
 // @description  将谱面快速同步到VR一体机上
 // @author       如梦Nya
 // @license      MIT
@@ -322,6 +322,20 @@ class CipherUtils {
             BLITZ_RHYTHM.close()
         }
     }
+
+    /**
+     * 获取当前页面类型
+     * @returns 
+     */
+    static getPageType() {
+        let url = window.location.href
+        let matchs = url.match(/edit\/(\w{1,})/)
+        if (!matchs) {
+            return "home"
+        } else {
+            return matchs[1]
+        }
+    }
 }
 
 // ================================= 方法 =================================
@@ -373,9 +387,10 @@ async function initScript() {
  */
 function addSyncButton() {
     // TODO 修复从edit返回到home时谱面顺序延时排列的问题
+    let pageType = CipherUtils.getPageType()
 
-    // 首页按钮
-    {
+    if (pageType === "home") {
+        // 首页按钮
         let btnList = $(".css-onrhul")
         if (btnList.length > 0) {
             let btn = btnList[0]
@@ -391,10 +406,12 @@ function addSyncButton() {
                 parentNode.append(webBtn)
             }
         }
+    } else {
+        $("#sync-web").remove()
     }
 
     // 首页谱面更多按钮
-    {
+    if (pageType === "home") {
         let btnList = $(".css-u4seia")
         for (let i = 0; i < btnList.length; i++) {
             let btn = btnList[i]
@@ -425,28 +442,35 @@ function addSyncButton() {
             }
             parentNode.append(btnSync[0])
         }
+    } else {
+        $("#btn-sync").remove()
     }
+
     // 导出页面
-    let divList = $(".css-1tiz3p0")
-    if (divList.length > 0) {
-        if ($("#div-sync").length > 0) return
-        let divBox = $(divList[0]).clone()
-        divBox[0].id = "div-sync"
-        divBox.find(".css-ujbghi")[0].innerHTML = "同步到VR设备"
-        divBox.find(".css-1exyu3y")[0].innerHTML = "点击打开同步页面, 在APP打开后, 它会帮你把谱面传输到VR设备上。"
-        divBox.find(".css-1y7rp4x")[0].innerText = "同步到VR设备"
-        divBox[0].onclick = e => {
-            CipherUtils.getSongInfoFromEditPage().then(songInfo => {
-                sendTaskToSyncWeb(songInfo).catch(err => {
+    if (pageType === "download") {
+        let divList = $(".css-1tiz3p0")
+        if (divList.length > 0) {
+            if ($("#div-sync").length > 0) return
+            let divBox = $(divList[0]).clone()
+            divBox[0].id = "div-sync"
+            divBox.find(".css-ujbghi")[0].innerHTML = "同步到VR设备"
+            divBox.find(".css-1exyu3y")[0].innerHTML = "点击打开同步页面, 在APP打开后, 它会帮你把谱面传输到VR设备上。"
+            divBox.find(".css-1y7rp4x")[0].innerText = "同步到VR设备"
+            divBox[0].onclick = e => {
+                CipherUtils.getSongInfoFromEditPage().then(songInfo => {
+                    sendTaskToSyncWeb(songInfo).catch(err => {
+                        console.error(err)
+                        alert("同步失败!")
+                    })
+                }).catch(err => {
                     console.error(err)
                     alert("同步失败!")
                 })
-            }).catch(err => {
-                console.error(err)
-                alert("同步失败!")
-            })
+            }
+            $(divList[0].parentNode).append(divBox)
         }
-        $(divList[0].parentNode).append(divBox)
+    } else {
+        $("#div-sync").remove()
     }
 }
 
