@@ -85,6 +85,7 @@ function updateConnectState() {
 		onStateUpdate("error", "插件与APP版本不一致, 请更新插件和APP!")
 	}).catch(err => {
 		if (!isRunning) return
+		console.error("连接VR端失败", err)
 		onStateUpdate("error", "连接VR端失败，请检查IP地址和APP是否正常!")
 	})
 }
